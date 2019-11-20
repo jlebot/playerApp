@@ -8,8 +8,8 @@ import { PlayerClassementComponent } from 'src/app/player/classement/player-clas
 import {PlayerService} from 'src/app/player/player.service';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {SettingsRequestInterceptor} from './http-communication/settings-request-interceptor.service';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import {MatPaginatorModule, MatTableModule} from '@angular/material';
+import {MatInputModule, MatPaginatorModule, MatProgressSpinnerModule, MatSortModule, MatTableModule} from '@angular/material';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -20,14 +20,13 @@ import {MatPaginatorModule, MatTableModule} from '@angular/material';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
-    NoopAnimationsModule,
+    MatInputModule,
+    MatTableModule,
     MatPaginatorModule,
-    MatTableModule
-  ],
-  exports: [
-    MatPaginatorModule,
-    MatTableModule
+    MatSortModule,
+    MatProgressSpinnerModule
   ],
   providers: [
     PlayerService,

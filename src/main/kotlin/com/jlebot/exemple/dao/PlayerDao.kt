@@ -10,6 +10,10 @@ object PlayerDao : IPlayerRpository {
         Player("Titi", 77),
         Player("Tata", 77),
         Player("Toto", 450),
+        Player("Henri", 89),
+        Player("Alain", 40),
+        Player("Harry", 888),
+        Player("Ron", 321),
         Player("Looser", 2)
     )
 

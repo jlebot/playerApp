@@ -1,25 +1,42 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
-import {MatTableDataSource} from '@angular/material/table';
 import {Player} from '../player';
+import {PlayerService} from '../player.service';
+import {PlayerDataSource} from '../player-data-source';
+import {tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-player-classement',
   templateUrl: './player-classement.component.html',
   styleUrls: ['./player-classement.component.css']
 })
-export class PlayerClassementComponent implements OnInit {
+export class PlayerClassementComponent implements AfterViewInit, OnInit {
 
+  playersCount: number;
+  dataSource: PlayerDataSource;
   displayedColumns: string[] = ['pseudo', 'points', 'rank'];
-  dataSource = new MatTableDataSource<Player>(ELEMENT_DATA);
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
+  constructor(private playerService: PlayerService) {}
+
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
+      this.playersCount = 10;
+      this.dataSource = new PlayerDataSource(this.playerService);
+      this.dataSource.loadPlayers('', 'asc', 0, 5);
   }
+
+  ngAfterViewInit() {
+    this.paginator.page.pipe(tap(() => this.loadPlayersPage())).subscribe();
+  }
+
+  loadPlayersPage() {
+    this.dataSource.loadPlayers('', 'asc', this.paginator.pageIndex, this.paginator.pageSize);
+  }
+
+  onRowClicked(player: Player) {
+    console.log('Selected player: ', player);
+  }
+
 }
 
-const ELEMENT_DATA: Player[] = [
-  {pseudo: 'test', points: 1000, rank: 1}
-];

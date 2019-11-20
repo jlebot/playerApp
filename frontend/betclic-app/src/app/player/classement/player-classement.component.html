@@ -1,28 +1,31 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-lg-6 offset-3">
-      <div class="mat-elevation-z8">
-        <table mat-table [dataSource]="dataSource">
 
-          <ng-container matColumnDef="pseudo">
-            <th mat-header-cell *matHeaderCellDef> Player </th>
-            <td mat-cell *matCellDef="let element"> {{element.pseudo}} </td>
-          </ng-container>
-          <ng-container matColumnDef="points">
-            <th mat-header-cell *matHeaderCellDef> Points </th>
-            <td mat-cell *matCellDef="let element"> {{element.points}} </td>
-          </ng-container>
-          <ng-container matColumnDef="rank">
-            <th mat-header-cell *matHeaderCellDef> Rank </th>
-            <td mat-cell *matCellDef="let element"> {{element.rank}} </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-
-        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      <div class="spinner-container" *ngIf="dataSource.loading$ | async">
+        <mat-spinner></mat-spinner>
       </div>
+
+      <mat-table class="mat-elevation-z8" [dataSource]="dataSource">
+
+        <ng-container matColumnDef="pseudo">
+          <mat-header-cell *matHeaderCellDef> Player </mat-header-cell>
+          <mat-cell *matCellDef="let player">{{player.pseudo}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="points">
+          <mat-header-cell *matHeaderCellDef> Points </mat-header-cell>
+          <mat-cell class="description-cell" *matCellDef="let player">{{player.points}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="rank">
+          <mat-header-cell *matHeaderCellDef> Rank </mat-header-cell>
+          <mat-cell class="duration-cell" *matCellDef="let player">{{player.rank}}</mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClicked(row)"></mat-row>
+      </mat-table>
+      <mat-paginator class="mat-elevation-z8" [length]="playersCount" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
     </div>
   </div>
 </div>
