@@ -34,11 +34,10 @@ export class PlayerService {
         map(response =>  plainToClass(Player, response)));
     }
 
-    public getPlayersWithPagination(filter = '', sortOrder = 'asc', pageNumber = 0, pageSize = 5): Observable<Player[]> {
+    public getPlayersWithPagination(filter = '', pageNumber = 0, pageSize = 5): Observable<Player[]> {
       return this.http.get<Player[]>(Routes.PLAYER, {
               params: new HttpParams()
                 .set('filter', filter)
-                .set('sortOrder', sortOrder)
                 .set('pageNumber', pageNumber.toString())
                 .set('pageSize', pageSize.toString())
             }).pipe(map(response =>  plainToClass(Player, response)));

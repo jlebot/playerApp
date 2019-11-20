@@ -4,6 +4,7 @@ import com.jlebot.exemple.domain.api.Player
 import com.jlebot.exemple.domain.application.PlayerService
 import com.jlebot.exemple.exception.PlayerNotFoundException
 import com.jlebot.exemple.exception.PlayerValidationException
+import com.jlebot.exemple.pagination.Page
 import org.slf4j.LoggerFactory
 import javax.validation.Valid
 import javax.ws.rs.*
@@ -18,10 +19,22 @@ class PlayerResource {
     val LOGGER = LoggerFactory.getLogger(PlayerResource::class.java)
 
     @GET
-    fun getPlayersSortByPoints(): Response {
-        LOGGER.info("Handling request to list all players sorted by points")
-        val playersSortByPoints = PlayerRepresentationMapper.toRepresentation(PlayerService.getAllPlayersSortByPoints())
-        return Response.ok(playersSortByPoints).build()
+    fun getPlayersWithOptionalPagination(
+                    @QueryParam("filter") filter: String?,
+                    @QueryParam("pageNumber") pageNumber: Int?,
+                    @QueryParam("pageSize") pageSize: Int?): Response {
+        val pagination = pageNumber != null
+        return  if (pagination) {
+                    LOGGER.info("Handling request to get players with pagination")
+                    LOGGER.info("Parameters : pageNumber = {}, pageSize = {}", pageNumber, pageSize)
+                    val page = Page(pageNumber ?: 0, pageSize ?: 5)
+                    val players = PlayerRepresentationMapper.toRepresentation(PlayerService.getPlayersByPage(page))
+                    Response.ok(players).build()
+                } else {
+                    LOGGER.info("Handling request to get players")
+                    val playersSortByPoints = PlayerRepresentationMapper.toRepresentation(PlayerService.getAllPlayersSortByPoints())
+                    Response.ok(playersSortByPoints).build()
+                }
     }
 
     @GET

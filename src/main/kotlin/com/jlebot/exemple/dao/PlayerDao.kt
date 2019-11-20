@@ -2,6 +2,7 @@ package com.jlebot.exemple.dao
 
 import com.jlebot.exemple.domain.api.Player
 import com.jlebot.exemple.domain.application.IPlayerRpository
+import com.jlebot.exemple.pagination.Page
 
 object PlayerDao : IPlayerRpository {
 
@@ -22,5 +23,7 @@ object PlayerDao : IPlayerRpository {
     override fun findForPseudo(pseudo: String): Player? = players.find { player -> player.pseudo.equals(pseudo) }
 
     override fun save(player: Player) = player
+
+    override fun getPlayersByPage(page: Page) = players.subList(0, 5)
 
 }

@@ -6,6 +6,7 @@ import com.jlebot.exemple.domain.api.IPlayerApi
 import com.jlebot.exemple.domain.api.Player
 import com.jlebot.exemple.exception.PlayerNotFoundException
 import com.jlebot.exemple.exception.PlayerValidationException
+import com.jlebot.exemple.pagination.Page
 import org.apache.commons.lang3.StringUtils
 
 object PlayerService : IPlayerApi {
@@ -22,6 +23,8 @@ object PlayerService : IPlayerApi {
     }
 
     override fun getRank(player: Player) = 1
+
+    override fun getPlayersByPage(page: Page) = PlayerDao.getPlayersByPage(page)
 
     private fun validate(player: Player) = if (StringUtils.isNotEmpty(player.pseudo)) true else throw PlayerValidationException(Constants.ERROR_PLAYER_PSEUDO_REQUIRED)
 

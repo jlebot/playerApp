@@ -23,7 +23,7 @@ export class PlayerClassementComponent implements AfterViewInit, OnInit {
   ngOnInit() {
       this.playersCount = 10;
       this.dataSource = new PlayerDataSource(this.playerService);
-      this.dataSource.loadPlayers('', 'asc', 0, 5);
+      this.dataSource.loadPlayers('', 0, 5);
   }
 
   ngAfterViewInit() {
@@ -31,7 +31,7 @@ export class PlayerClassementComponent implements AfterViewInit, OnInit {
   }
 
   loadPlayersPage() {
-    this.dataSource.loadPlayers('', 'asc', this.paginator.pageIndex, this.paginator.pageSize);
+    this.dataSource.loadPlayers('', this.paginator.pageIndex, this.paginator.pageSize);
   }
 
   onRowClicked(player: Player) {

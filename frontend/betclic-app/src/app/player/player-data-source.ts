@@ -22,9 +22,9 @@ export class PlayerDataSource implements DataSource<Player> {
         this.loadingSubject.complete();
     }
 
-    loadPlayers(filter = '', sortDirection = 'asc', pageIndex = 0, pageSize = 5) {
+    loadPlayers(filter = '', pageIndex = 0, pageSize = 5) {
         this.loadingSubject.next(true);
-        this.playerService.getPlayersWithPagination(filter, sortDirection, pageIndex, pageSize)
+        this.playerService.getPlayersWithPagination(filter, pageIndex, pageSize)
               .pipe(catchError(() => of([])), finalize(() => this.loadingSubject.next(false)))
               .subscribe(players => this.playerSubject.next(players));
     }
