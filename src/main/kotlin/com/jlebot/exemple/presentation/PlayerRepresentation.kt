@@ -1,3 +1,3 @@
 package com.jlebot.exemple.presentation
 
-data class PlayerRepresentation(val pseudo: String, var points: Int, val ranking: Int?)
+data class PlayerRepresentation(val pseudo: String? = null, val points: Int? = null, val ranking: Int? = null)

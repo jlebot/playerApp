@@ -22,6 +22,6 @@ object PlayerRepresentationMapper {
         return result
     }
 
-    fun toDomain(player: PlayerRepresentation) = Player(player.pseudo, player.points)
+    fun toDomain(player: PlayerRepresentation) = Player(player.pseudo ?: "", player.points ?: 0)
 
 }
