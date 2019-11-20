@@ -21,7 +21,7 @@ object PlayerService : IPlayerApi {
         return playerInBdd
     }
 
-    override fun getRanking(player: Player) = 1
+    override fun getRank(player: Player) = 1
 
     private fun validate(player: Player) = if (StringUtils.isNotEmpty(player.pseudo)) true else throw PlayerValidationException(Constants.ERROR_PLAYER_PSEUDO_REQUIRED)
 

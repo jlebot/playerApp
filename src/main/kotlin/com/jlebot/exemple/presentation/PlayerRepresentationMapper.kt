@@ -6,7 +6,7 @@ import com.jlebot.exemple.domain.application.PlayerService
 
 object PlayerRepresentationMapper {
 
-    fun toRepresentation(player: Player) = PlayerRepresentation(player.pseudo, player.points, PlayerService.getRanking(player))
+    fun toRepresentation(player: Player) = PlayerRepresentation(player.pseudo, player.points, PlayerService.getRank(player))
 
     fun toRepresentation(playersSortByPoints: List<Player>) : List<PlayerRepresentation> {
         val result = Lists.newArrayList<PlayerRepresentation>()
@@ -21,5 +21,7 @@ object PlayerRepresentationMapper {
         }
         return result
     }
+
+    fun toDomain(player: PlayerRepresentation) = Player(player.pseudo, player.points)
 
 }

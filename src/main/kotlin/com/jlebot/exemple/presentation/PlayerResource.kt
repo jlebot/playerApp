@@ -2,21 +2,63 @@ package com.jlebot.exemple.presentation
 
 import com.jlebot.exemple.domain.api.Player
 import com.jlebot.exemple.domain.application.PlayerService
+import com.jlebot.exemple.exception.PlayerNotFoundException
+import com.jlebot.exemple.exception.PlayerValidationException
+import org.slf4j.LoggerFactory
+import javax.validation.Valid
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
+import javax.ws.rs.core.Response
 
 @Path(Routes.PLAYER)
 @Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 class PlayerResource {
 
+    val LOGGER = LoggerFactory.getLogger(PlayerResource::class.java)
+
     @GET
-    fun getPlayersSortByPoints(): List<PlayerRepresentation> = PlayerRepresentationMapper.toRepresentation(PlayerService.getAllPlayersSortByPoints())
+    fun getPlayersSortByPoints(): Response {
+        LOGGER.info("Handling request to list all players sorted by points")
+        val playersSortByPoints = PlayerRepresentationMapper.toRepresentation(PlayerService.getAllPlayersSortByPoints())
+        return Response.ok(playersSortByPoints).build()
+    }
 
     @GET
     @Path("{pseudo}")
-    fun get(@PathParam("pseudo") pseudo: String): PlayerRepresentation = PlayerRepresentationMapper.toRepresentation(PlayerService.getPlayer(pseudo))
+    fun get(@PathParam("pseudo") pseudo: String): Response {
+        LOGGER.info("Handling request to get player {}", pseudo)
+        return try {
+                    val player = PlayerRepresentationMapper.toRepresentation(PlayerService.getPlayer(pseudo))
+                    Response.ok(player).build()
+                } catch (e: PlayerNotFoundException) {
+                    LOGGER.error("Player with pseudo: {} was not found", pseudo)
+                    Response.status(Response.Status.NOT_FOUND).build()
+                }
+    }
+
+    @PUT
+    fun create(@Valid pseudo: String): Response {
+        LOGGER.info("Handling request to create player {}", pseudo)
+        return try {
+                    val player = PlayerRepresentationMapper.toRepresentation(PlayerService.save(Player(pseudo,0)))
+                    Response.ok(player).build()
+                } catch (e: PlayerValidationException) {
+                    LOGGER.error("Error while creating player {}", pseudo)
+                    Response.status(Response.Status.NOT_ACCEPTABLE).build()
+                }
+    }
 
     @POST
-    fun save(): PlayerRepresentation = PlayerRepresentationMapper.toRepresentation(PlayerService.save(Player("titi",5)))
+    fun save(@Valid player: PlayerRepresentation): Response {
+        LOGGER.info("Handling request to save player {}", player)
+        return try {
+                    val playerSaved = PlayerRepresentationMapper.toRepresentation(PlayerService.save(PlayerRepresentationMapper.toDomain(player)))
+                    Response.ok(playerSaved).build()
+                } catch (e: PlayerValidationException) {
+                    LOGGER.error("Error while saving player {}", player)
+                    Response.status(Response.Status.NOT_ACCEPTABLE).build()
+                }
+    }
 
 }
