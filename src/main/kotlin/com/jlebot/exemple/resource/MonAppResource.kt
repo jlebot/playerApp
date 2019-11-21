@@ -1,4 +1,4 @@
-package com.jlebot.exemple.presentation
+package com.jlebot.exemple.resource
 
 import com.jlebot.exemple.Constants
 import javax.ws.rs.GET

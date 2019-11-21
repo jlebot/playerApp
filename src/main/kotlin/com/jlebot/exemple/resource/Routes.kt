@@ -1,4 +1,4 @@
-package com.jlebot.exemple.presentation
+package com.jlebot.exemple.resource
 
 
 class Routes private constructor() {

@@ -1,7 +1,7 @@
-package com.jlebot.exemple.presentation
+package com.jlebot.exemple.resource
 
+import com.jlebot.exemple.domain.api.IPlayerApi
 import com.jlebot.exemple.domain.api.Player
-import com.jlebot.exemple.domain.application.PlayerService
 import com.jlebot.exemple.exception.PlayerNotFoundException
 import com.jlebot.exemple.exception.PlayerValidationException
 import com.jlebot.exemple.pagination.Page
@@ -14,10 +14,10 @@ import javax.ws.rs.core.Response
 @Path(Routes.PLAYER)
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-class PlayerResource(val playerService: PlayerService) {
+class PlayerResource(val playerApi: IPlayerApi) {
 
     val LOGGER = LoggerFactory.getLogger(PlayerResource::class.java)
-    val mapper = PlayerRepresentationMapper(playerService)
+    val mapper = PlayerRepresentationMapper(playerApi)
 
     @GET
     fun getPlayersWithOptionalPagination(
@@ -29,11 +29,11 @@ class PlayerResource(val playerService: PlayerService) {
                     LOGGER.info("Handling request to get players with pagination")
                     LOGGER.info("Parameters : pageNumber = {}, pageSize = {}", pageNumber, pageSize)
                     val page = Page(pageNumber ?: 0, pageSize ?: 5)
-                    val players = mapper.toRepresentation(playerService.getPlayersByPage(page))
+                    val players = mapper.toRepresentation(playerApi.getPlayersByPage(page), page)
                     Response.ok(players).build()
                 } else {
                     LOGGER.info("Handling request to get players")
-                    val playersSortByPoints = mapper.toRepresentation(playerService.getAllPlayersSortByPoints())
+                    val playersSortByPoints = mapper.toRepresentation(playerApi.getAllPlayersSortByPoints())
                     Response.ok(playersSortByPoints).build()
                 }
     }
@@ -43,7 +43,7 @@ class PlayerResource(val playerService: PlayerService) {
     fun get(@PathParam("pseudo") pseudo: String): Response {
         LOGGER.info("Handling request to get player {}", pseudo)
         return try {
-                    val player = mapper.toRepresentation(playerService.getPlayer(pseudo))
+                    val player = mapper.toRepresentation(playerApi.getPlayer(pseudo))
                     Response.ok(player).build()
                 } catch (e: PlayerNotFoundException) {
                     LOGGER.error("Player with pseudo: {} was not found", pseudo)
@@ -55,7 +55,7 @@ class PlayerResource(val playerService: PlayerService) {
     fun create(@Valid pseudo: String): Response {
         LOGGER.info("Handling request to create player {}", pseudo)
         return try {
-                    val player = mapper.toRepresentation(playerService.save(Player(pseudo,0)))
+                    val player = mapper.toRepresentation(playerApi.save(Player(pseudo,0)))
                     Response.ok(player).build()
                 } catch (e: PlayerValidationException) {
                     LOGGER.error("Error while creating player {}", pseudo)
@@ -67,7 +67,7 @@ class PlayerResource(val playerService: PlayerService) {
     fun save(@Valid player: PlayerRepresentation): Response {
         LOGGER.info("Handling request to save player {}", player)
         return try {
-                    val playerSaved = mapper.toRepresentation(playerService.save(mapper.toDomain(player)))
+                    val playerSaved = mapper.toRepresentation(playerApi.save(mapper.toDomain(player)))
                     Response.ok(playerSaved).build()
                 } catch (e: PlayerValidationException) {
                     LOGGER.error("Error while saving player {}", player)

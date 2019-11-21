@@ -3,8 +3,8 @@ package com.jlebot.exemple
 import com.jlebot.exemple.config.MonAppConfig
 import com.jlebot.exemple.dao.PlayerDao
 import com.jlebot.exemple.domain.application.PlayerService
-import com.jlebot.exemple.presentation.MonAppResource
-import com.jlebot.exemple.presentation.PlayerResource
+import com.jlebot.exemple.resource.MonAppResource
+import com.jlebot.exemple.resource.PlayerResource
 import io.dropwizard.Application
 import io.dropwizard.db.DataSourceFactory
 import io.dropwizard.jdbi.DBIFactory
@@ -24,7 +24,7 @@ class MonApp : Application<MonAppConfig>() {
         val jdbi = DBIFactory().build(environment, configuration.dataSourceFactory, "postgresql")
         val playerDao = jdbi.onDemand(PlayerDao::class.java)
 
-        // Declare resources
+        // Configure resources
         environment.jersey().register(MonAppResource())
         environment.jersey().register(PlayerResource(PlayerService(playerDao)))
 
@@ -37,13 +37,11 @@ class MonApp : Application<MonAppConfig>() {
     }
 
     override fun initialize(bootstrap: Bootstrap<MonAppConfig>) {
-        // bootstrap.objectMapper.registerModule(KotlinModule())
         bootstrap.addBundle(object: MigrationsBundle<MonAppConfig>() {
             override fun getDataSourceFactory(configuration: MonAppConfig): DataSourceFactory {
                 return configuration.dataSourceFactory
             }
         })
-        // bootstrap.addBundle(AssetsBundle("/assets/", "/"))
     }
 
 }
