@@ -27,9 +27,14 @@ class PlayerService(val playerRepository: IPlayerRepository) : IPlayerApi {
 
     override fun getRank(player: Player) = playerRepository.getRank(player)
 
-    override fun getPlayersByPage(page: Page) = playerRepository.findWithPagination(page.pageNumber * page.pageSize, page.pageSize)
+    override fun getPlayersByPage(page: Page) =
+        playerRepository.findWithPagination(
+            filter = if (StringUtils.isEmpty(page.filter)) "%%" else "%${page.filter.toUpperCase()}%",
+            offset = page.pageNumber * page.pageSize,
+            limit = page.pageSize
+        )
 
-    override fun countPlayers() = playerRepository.count()
+    override fun countPlayersWithFilter(filter: String) = playerRepository.countPlayersWithFilter(if (StringUtils.isEmpty(filter)) "%%" else "%${filter.toUpperCase()}%")
 
     override fun deleteAll() = playerRepository.deleteAll()
 

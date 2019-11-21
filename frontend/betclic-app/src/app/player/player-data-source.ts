@@ -24,7 +24,7 @@ export class PlayerDataSource implements DataSource<Player> {
 
     loadPlayers(filter = '', pageIndex = 0, pageSize = 5) {
         this.loadingSubject.next(true);
-        this.playerService.getPlayersWithPagination(filter, pageIndex, pageSize)
+        this.playerService.getPlayersWithFilterAndPagination(filter, pageIndex, pageSize)
               .pipe(catchError(() => of([])), finalize(() => this.loadingSubject.next(false)))
               .subscribe(players => this.playerSubject.next(players));
     }

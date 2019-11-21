@@ -29,11 +29,11 @@ interface PlayerDao : IPlayerRepository {
     @SqlUpdate("delete from players")
     override fun deleteAll()
 
-    @SqlQuery("select pseudo, points from players order by points desc limit :limit offset :offset")
-    override fun findWithPagination(@Bind("offset") offset: Int, @Bind("limit") limit: Int): List<Player>
+    @SqlQuery("select pseudo, points from players where UPPER(pseudo) like :filter order by points desc limit :limit offset :offset")
+    override fun findWithPagination(@Bind("filter") filter: String, @Bind("offset") offset: Int, @Bind("limit") limit: Int): List<Player>
 
-    @SqlQuery("select count(*) from players")
-    override fun count(): Int
+    @SqlQuery("select count(*) from players where UPPER(pseudo) like :filter")
+    override fun countPlayersWithFilter(@Bind("filter") filter: String): Int
 
     @SqlQuery("select 1 + count(*) from players where points > :points")
     override fun getRank(@BindBean player: Player) : Int

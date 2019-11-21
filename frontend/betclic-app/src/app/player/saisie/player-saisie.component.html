@@ -11,7 +11,7 @@
         <div *ngIf="modeCreation">
           <label for="inputPseudo">Pseudo</label>
           <input type="text" class="form-control form-control-sm" id="inputPseudo" #playerPseudo="ngModel" name="inputPseudo"
-                 placeholder="Pseudo" [(ngModel)]="player.pseudo" maxlength="10" required>
+                 placeholder="Pseudo" autofocus [(ngModel)]="player.pseudo" maxlength="10" required>
           <div *ngIf="playerPseudo.invalid && (playerPseudo.dirty || playerPseudo.touched)">
             <small *ngIf="playerPseudo.errors.required" class="form-text text-danger font-weight-bold">
               Pseudo required

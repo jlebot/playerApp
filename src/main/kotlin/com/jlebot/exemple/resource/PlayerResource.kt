@@ -20,15 +20,15 @@ class PlayerResource(val playerApi: IPlayerApi) {
     val mapper = PlayerRepresentationMapper(playerApi)
 
     @GET
-    fun getPlayersWithOptionalPagination(
+    fun getPlayersWithOptionalFilterAndPagination(
                     @QueryParam("filter") filter: String?,
                     @QueryParam("pageNumber") pageNumber: Int?,
                     @QueryParam("pageSize") pageSize: Int?): Response {
         val pagination = pageNumber != null
         return  if (pagination) {
                     LOGGER.info("Handling request to get players with pagination")
-                    LOGGER.info("Parameters : pageNumber = {}, pageSize = {}", pageNumber, pageSize)
-                    val page = Page(pageNumber ?: 0, pageSize ?: 5)
+                    LOGGER.info("Parameters : filter = {}, pageNumber = {}, pageSize = {}", filter, pageNumber, pageSize)
+                    val page = Page(filter ?: "", pageNumber ?: 0, pageSize ?: 5)
                     val players = mapper.toRepresentation(playerApi.getPlayersByPage(page), page)
                     Response.ok(players).build()
                 } else {
@@ -51,18 +51,6 @@ class PlayerResource(val playerApi: IPlayerApi) {
                 }
     }
 
-    @PUT
-    fun create(@Valid pseudo: String): Response {
-        LOGGER.info("Handling request to create player {}", pseudo)
-        return try {
-                    val player = mapper.toRepresentation(playerApi.save(Player(pseudo,0)))
-                    Response.ok(player).build()
-                } catch (e: PlayerValidationException) {
-                    LOGGER.error("Error while creating player {}", pseudo)
-                    Response.status(Response.Status.NOT_ACCEPTABLE).build()
-                }
-    }
-
     @POST
     fun save(@Valid player: PlayerRepresentation): Response {
         LOGGER.info("Handling request to save player {}", player)
@@ -71,21 +59,33 @@ class PlayerResource(val playerApi: IPlayerApi) {
                     Response.ok(playerSaved).build()
                 } catch (e: PlayerValidationException) {
                     LOGGER.error("Error while saving player {}", player)
-                    Response.status(Response.Status.NOT_ACCEPTABLE).build()
+                    Response.status(Response.Status.FORBIDDEN).build()
                 }
     }
 
-    @GET
-    @Path(Routes.COUNT)
-    fun getCount(): Response {
-        LOGGER.info("Handling request to get player count")
-        return Response.ok(playerApi.countPlayers()).build()
+    @PUT
+    fun create(@Valid pseudo: String): Response {
+        LOGGER.info("Handling request to create player {}", pseudo)
+        return try {
+            val player = mapper.toRepresentation(playerApi.save(Player(pseudo,0)))
+            Response.ok(player).build()
+        } catch (e: PlayerValidationException) {
+            LOGGER.error("Error while creating player {}", pseudo)
+            Response.status(Response.Status.FORBIDDEN).build()
+        }
     }
 
     @DELETE
     fun deleteAll(): Response {
         LOGGER.info("Handling request to delete all players")
         return Response.ok(playerApi.deleteAll()).build()
+    }
+
+    @GET
+    @Path(Routes.COUNT)
+    fun getCount(@QueryParam("filter") filter: String?): Response {
+        LOGGER.info("Handling request to get player count for filter : {}", filter)
+        return Response.ok(playerApi.countPlayersWithFilter(filter ?: "")).build()
     }
 
 }

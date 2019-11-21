@@ -10,8 +10,8 @@ interface IPlayerRepository {
     fun findAll(): List<Player>
     fun delete(player: Player)
     fun deleteAll()
-    fun findWithPagination(offset: Int, limit: Int): List<Player>
-    fun count(): Int
+    fun findWithPagination(filter: String, offset: Int, limit: Int): List<Player>
+    fun countPlayersWithFilter(filter: String): Int
     fun getRank(player: Player) : Int
 
 }

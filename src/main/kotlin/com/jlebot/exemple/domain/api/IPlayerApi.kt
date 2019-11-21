@@ -9,7 +9,7 @@ interface IPlayerApi {
     fun getRank(player: Player) : Int
     fun save(player: Player) : Player
     fun getPlayersByPage(page: Page) : List<Player>
-    fun countPlayers(): Int
+    fun countPlayersWithFilter(filter: String): Int
     fun deleteAll()
 
 }
