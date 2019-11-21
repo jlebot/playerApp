@@ -4,12 +4,14 @@ import com.jlebot.exemple.domain.api.Player
 
 interface IPlayerRepository {
 
-    fun insert(player: Player) : Int
-    fun update(pseudo: String, points: Int) : Int
+    fun insert(player: Player)
+    fun update(player: Player)
     fun find(pseudo: String): Player?
     fun findAll(): List<Player>
-    fun delete(pseudo: String) : Int
-    fun deleteAll() : Int
+    fun delete(player: Player)
+    fun deleteAll()
     fun findWithPagination(offset: Int, limit: Int): List<Player>
+    fun count(): Int
+    fun getRank(player: Player) : Int
 
 }

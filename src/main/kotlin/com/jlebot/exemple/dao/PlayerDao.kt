@@ -12,10 +12,10 @@ import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper
 interface PlayerDao : IPlayerRepository {
 
     @SqlUpdate("INSERT into players (pseudo, points) VALUES (:pseudo, :points)")
-    override fun insert(@BindBean player: Player) : Int
+    override fun insert(@BindBean player: Player)
 
     @SqlUpdate("update players set points = :points where pseudo = :pseudo")
-    override fun update(@Bind("pseudo") pseudo: String, @Bind("points") points: Int) : Int
+    override fun update(@BindBean player: Player)
 
     @SqlQuery("select pseudo, points from players where pseudo = :pseudo")
     override fun find(@Bind("pseudo") pseudo: String): Player?
@@ -24,12 +24,18 @@ interface PlayerDao : IPlayerRepository {
     override fun findAll(): List<Player>
 
     @SqlUpdate("delete from players where pseudo = :pseudo")
-    override fun delete(@Bind("pseudo") pseudo: String) : Int
+    override fun delete(@BindBean player: Player)
 
     @SqlUpdate("delete from players")
-    override fun deleteAll() : Int
+    override fun deleteAll()
 
     @SqlQuery("select pseudo, points from players order by points desc limit :limit offset :offset")
     override fun findWithPagination(@Bind("offset") offset: Int, @Bind("limit") limit: Int): List<Player>
+
+    @SqlQuery("select count(*) from players")
+    override fun count(): Int
+
+    @SqlQuery("select 1 + count(*) from players where points > :points")
+    override fun getRank(@BindBean player: Player) : Int
 
 }

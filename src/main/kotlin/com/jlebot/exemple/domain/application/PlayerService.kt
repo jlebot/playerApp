@@ -20,14 +20,18 @@ class PlayerService(val playerRepository: IPlayerRepository) : IPlayerApi {
         if (playerInBdd == null) {
             playerRepository.insert(player)
         } else {
-            playerRepository.update(playerInBdd.pseudo, player.points)
+            playerRepository.update(player)
         }
         return player
     }
 
-    override fun getRank(player: Player) = 1
+    override fun getRank(player: Player) = playerRepository.getRank(player)
 
     override fun getPlayersByPage(page: Page) = playerRepository.findWithPagination(page.pageNumber * page.pageSize, page.pageSize)
+
+    override fun countPlayers() = playerRepository.count()
+
+    override fun deleteAll() = playerRepository.deleteAll()
 
     private fun validate(player: Player) {
         if (StringUtils.isEmpty(player.pseudo)) {

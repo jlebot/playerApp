@@ -75,4 +75,17 @@ class PlayerResource(val playerApi: IPlayerApi) {
                 }
     }
 
+    @GET
+    @Path(Routes.COUNT)
+    fun getCount(): Response {
+        LOGGER.info("Handling request to get player count")
+        return Response.ok(playerApi.countPlayers()).build()
+    }
+
+    @DELETE
+    fun deleteAll(): Response {
+        LOGGER.info("Handling request to delete all players")
+        return Response.ok(playerApi.deleteAll()).build()
+    }
+
 }

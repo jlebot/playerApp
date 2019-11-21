@@ -43,4 +43,8 @@ export class PlayerService {
             }).pipe(map(response =>  plainToClass(Player, response)));
     }
 
+  public getPlayersCount(): Observable<number> {
+    return this.http.get<number>(`${Routes.PLAYERS_COUNT}`);
+  }
+
 }

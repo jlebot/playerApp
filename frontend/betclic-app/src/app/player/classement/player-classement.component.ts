@@ -21,7 +21,7 @@ export class PlayerClassementComponent implements AfterViewInit, OnInit {
   constructor(private playerService: PlayerService) {}
 
   ngOnInit() {
-      this.playersCount = 20;
+      this.playerService.getPlayersCount().subscribe( count => this.playersCount = count);
       this.dataSource = new PlayerDataSource(this.playerService);
       this.dataSource.loadPlayers('', 0, 5);
   }
