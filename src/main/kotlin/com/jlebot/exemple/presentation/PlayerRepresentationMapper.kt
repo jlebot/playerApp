@@ -4,9 +4,9 @@ import com.google.common.collect.Lists
 import com.jlebot.exemple.domain.api.Player
 import com.jlebot.exemple.domain.application.PlayerService
 
-object PlayerRepresentationMapper {
+class PlayerRepresentationMapper(val playerService: PlayerService) {
 
-    fun toRepresentation(player: Player) = PlayerRepresentation(player.pseudo, player.points, PlayerService.getRank(player))
+    fun toRepresentation(player: Player) = PlayerRepresentation(player.pseudo, player.points, playerService.getRank(player))
 
     fun toRepresentation(playersSortByPoints: List<Player>) : List<PlayerRepresentation> {
         val result = Lists.newArrayList<PlayerRepresentation>()

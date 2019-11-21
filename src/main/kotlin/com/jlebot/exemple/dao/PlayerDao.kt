@@ -2,28 +2,34 @@ package com.jlebot.exemple.dao
 
 import com.jlebot.exemple.domain.api.Player
 import com.jlebot.exemple.domain.application.IPlayerRpository
-import com.jlebot.exemple.pagination.Page
+import org.skife.jdbi.v2.sqlobject.Bind
+import org.skife.jdbi.v2.sqlobject.BindBean
+import org.skife.jdbi.v2.sqlobject.SqlQuery
+import org.skife.jdbi.v2.sqlobject.SqlUpdate
+import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper
 
-object PlayerDao : IPlayerRpository {
+@RegisterMapper(PlayerMapper::class)
+interface PlayerDao : IPlayerRpository {
 
-    private val players: List<Player> = listOf(
-        Player("M3rzhin", 50000),
-        Player("Titi", 77),
-        Player("Tata", 77),
-        Player("Toto", 450),
-        Player("Henri", 89),
-        Player("Alain", 40),
-        Player("Harry", 888),
-        Player("Ron", 321),
-        Player("Looser", 2)
-    )
+    @SqlUpdate("INSERT into players (pseudo, points) VALUES (:pseudo, :points)")
+    fun insert(@BindBean player: Player) : Int
 
-    override fun getAllPlayersSortByPoints() = players.sortedByDescending { player -> player.points }
+    @SqlUpdate("update players set points = :points where pseudo = :pseudo")
+    fun update(@Bind("pseudo") pseudo: String, @Bind("points") points: Int) : Int
 
-    override fun findForPseudo(pseudo: String): Player? = players.find { player -> player.pseudo.equals(pseudo) }
+    @SqlQuery("select pseudo, points from players where pseudo = :pseudo")
+    fun find(@Bind("pseudo") pseudo: String): Player?
 
-    override fun save(player: Player) = player
+    @SqlQuery("select pseudo, points from players order by points")
+    fun findAll(): List<Player>
 
-    override fun getPlayersByPage(page: Page) = players.subList(0, 5)
+    @SqlUpdate("delete from players where pseudo = :pseudo")
+    fun delete(@Bind("pseudo") pseudo: String) : Int
+
+    @SqlUpdate("delete from players")
+    fun deleteAll() : Int
+
+    @SqlQuery("select pseudo, points from players order by points limit :pageSize offset :pageNumber")
+    fun findAllWithPagination(@Bind("pageNumber") pageNumber: Int, @Bind("pageSize") pageSize: Int): List<Player>
 
 }
