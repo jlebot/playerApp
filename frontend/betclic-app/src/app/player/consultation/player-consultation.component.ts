@@ -4,6 +4,8 @@ import {Player} from '../player';
 import {PlayerService} from '../player.service';
 import {PlayerDataSource} from '../player-data-source';
 import {tap} from 'rxjs/operators';
+import {PlayerSaisieComponent} from '../saisie/player-saisie.component';
+import {MessageDialogService} from '../../technique/message-dialog.service';
 
 @Component({
   selector: 'app-player-consultation',
@@ -18,7 +20,7 @@ export class PlayerConsultationComponent implements AfterViewInit, OnInit {
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
-  constructor(private playerService: PlayerService) {}
+  constructor(private playerService: PlayerService, private modalService: MessageDialogService) {}
 
   ngOnInit() {
       this.playerService.getPlayersCount().subscribe( count => this.playersCount = count);
@@ -35,16 +37,18 @@ export class PlayerConsultationComponent implements AfterViewInit, OnInit {
       this.dataSource.loadPlayers('', this.paginator.pageIndex, this.paginator.pageSize);
   }
 
-  onRowClicked(player: Player) {
-      console.log('Selected player: ', player);
-  }
-
-  onAddPlayer() {
-      console.log('Adding player');
+  openModalDialogue(player: Player) {
+      const playerSaisieComponent = this.modalService.open(PlayerSaisieComponent);
+      playerSaisieComponent.result.then(
+        () => this.loadPlayersPage(),
+        () => {}
+      );
+      if (player) {
+        playerSaisieComponent.componentInstance.inputPlayer = player;
+      }
   }
 
   onClearPlayers() {
-      console.log('Clear players');
       this.playerService.deleteAllPlayers().subscribe(() => this.loadPlayersPage());
   }
 

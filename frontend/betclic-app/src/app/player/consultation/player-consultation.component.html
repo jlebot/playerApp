@@ -27,7 +27,7 @@
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClicked(row)"></mat-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns" (click)="openModalDialogue(row)"></mat-row>
       </mat-table>
       <mat-paginator class="mat-elevation-z8" [length]="playersCount" [pageSize]="5" [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons></mat-paginator>
 
@@ -35,7 +35,7 @@
   </div>
   <div class="row mt-3">
     <div class="col-lg-6 offset-3 text-center">
-      <button id="btnAddPlayer" type="button" class="btn btn-outline-success m-1" (click)="onAddPlayer()">
+      <button id="btnAddPlayer" data-toggle="modal" type="button" class="btn btn-outline-success m-1" (click)="openModalDialogue()">
         <div class="d-flex">
           <i class="material-icons">playlist_add</i>Add a player
         </div>

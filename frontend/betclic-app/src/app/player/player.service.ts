@@ -13,42 +13,26 @@ export class PlayerService {
       constructor(private http: HttpClient) { }
 
 
-      public save(player: Player): Observable<Player> {
+      public save(player: Player) {
           return this.http.post<Player>(Routes.PLAYER, classToPlain(player)).pipe(
               map(response => plainToClass(Player, response)));
       }
 
-      public create(pseudo: string): Observable<Player> {
-          return this.http.put<string>(Routes.PLAYER, classToPlain(pseudo)).pipe(
-              map(response => plainToClass(Player, response)));
+      public getPlayersWithPagination(filter = '', pageNumber = 0, pageSize = 5): Observable<Player[]> {
+          return this.http.get<Player[]>(Routes.PLAYER, {
+                  params: new HttpParams()
+                    .set('filter', filter)
+                    .set('pageNumber', pageNumber.toString())
+                    .set('pageSize', pageSize.toString())
+                }).pipe(map(response =>  plainToClass(Player, response)));
       }
 
-
-      public get(pseudo: string): Observable<Player> {
-          return this.http.get<Player>(`${Routes.PLAYER}/${pseudo}`).pipe(
-              map(response =>  plainToClass(Player, response)));
+      public getPlayersCount(): Observable<number> {
+          return this.http.get<number>(`${Routes.PLAYERS_COUNT}`);
       }
 
-    public getPlayersSortByPoints(): Observable<Player[]> {
-        return this.http.get<Player[]>(Routes.PLAYER).pipe(
-            map(response =>  plainToClass(Player, response)));
-    }
-
-    public getPlayersWithPagination(filter = '', pageNumber = 0, pageSize = 5): Observable<Player[]> {
-        return this.http.get<Player[]>(Routes.PLAYER, {
-                params: new HttpParams()
-                  .set('filter', filter)
-                  .set('pageNumber', pageNumber.toString())
-                  .set('pageSize', pageSize.toString())
-              }).pipe(map(response =>  plainToClass(Player, response)));
-    }
-
-    public getPlayersCount(): Observable<number> {
-        return this.http.get<number>(`${Routes.PLAYERS_COUNT}`);
-    }
-
-    public deleteAllPlayers() {
-        return this.http.delete(Routes.PLAYER);
-    }
+      public deleteAllPlayers() {
+          return this.http.delete(Routes.PLAYER);
+      }
 
 }

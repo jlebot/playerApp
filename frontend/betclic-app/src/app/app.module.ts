@@ -9,6 +9,9 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {SettingsRequestInterceptor} from './http-communication/settings-request-interceptor.service';
 import {MatInputModule, MatPaginatorModule, MatProgressSpinnerModule, MatSortModule, MatTableModule} from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MessageDialogService} from './technique/message-dialog.service';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -16,8 +19,14 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     PlayerSaisieComponent,
     PlayerConsultationComponent
   ],
+  entryComponents: [
+    PlayerSaisieComponent
+  ],
   imports: [
     BrowserModule,
+    NgbModule,
+    FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     HttpClientModule,
     MatInputModule,
@@ -28,6 +37,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
   ],
   providers: [
     PlayerService,
+    MessageDialogService,
     [
       { provide: HTTP_INTERCEPTORS, useClass: SettingsRequestInterceptor, multi: true }
     ]
