@@ -30,21 +30,25 @@ export class PlayerService {
       }
 
     public getPlayersSortByPoints(): Observable<Player[]> {
-      return this.http.get<Player[]>(`${Routes.PLAYER}`).pipe(
-        map(response =>  plainToClass(Player, response)));
+        return this.http.get<Player[]>(Routes.PLAYER).pipe(
+            map(response =>  plainToClass(Player, response)));
     }
 
     public getPlayersWithPagination(filter = '', pageNumber = 0, pageSize = 5): Observable<Player[]> {
-      return this.http.get<Player[]>(Routes.PLAYER, {
-              params: new HttpParams()
-                .set('filter', filter)
-                .set('pageNumber', pageNumber.toString())
-                .set('pageSize', pageSize.toString())
-            }).pipe(map(response =>  plainToClass(Player, response)));
+        return this.http.get<Player[]>(Routes.PLAYER, {
+                params: new HttpParams()
+                  .set('filter', filter)
+                  .set('pageNumber', pageNumber.toString())
+                  .set('pageSize', pageSize.toString())
+              }).pipe(map(response =>  plainToClass(Player, response)));
     }
 
-  public getPlayersCount(): Observable<number> {
-    return this.http.get<number>(`${Routes.PLAYERS_COUNT}`);
-  }
+    public getPlayersCount(): Observable<number> {
+        return this.http.get<number>(`${Routes.PLAYERS_COUNT}`);
+    }
+
+    public deleteAllPlayers() {
+        return this.http.delete(Routes.PLAYER);
+    }
 
 }
