@@ -123,6 +123,19 @@ logging() {
 ### DISPLAY FUNCTIONS ###
 #########################
 
+secToStr() {
+    TR_SEC=$(expr "${1}" % "60")
+    TR_MIN=$(expr "${1}" / "60")
+    TR_MIN=$(expr "${TR_MIN}" % "60")
+    TR_HR=$(expr "${1}" / "3600")
+
+    # formating
+    test "${TR_SEC}" -lt 10 && TR_SEC="0${TR_SEC}"
+    test "${TR_MIN}" -lt 10 && TR_MIN="0${TR_MIN}"
+
+    echo "${TR_HR}:${TR_MIN}:${TR_SEC}"
+}
+
 print_status_compute_time() {
     DELTA_TIME=$(expr ${G_STATUS_END_TIME} - ${G_STATUS_BEGIN_TIME})
     DELTA_TIME_STR=$(secToStr "${DELTA_TIME}")
