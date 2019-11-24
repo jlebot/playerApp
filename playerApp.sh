@@ -244,7 +244,7 @@ front_getUp() {
 	return 0
     fi
 
-    if ! (cd "frontend" && ng serve)
+    if ! (cd "frontend/betclic-app" && ng serve)
 	then
 	print_status_end_ERROR
 	return 1
@@ -257,7 +257,7 @@ front_getUp() {
 front_getInstall() {
     print_status_begin "Installing front components"
 
-    if ! (cd "frontend" && npm install)
+    if ! (cd "frontend/betclic-app" && npm install)
 	then
 	print_status_end_ERROR
 	return 1
