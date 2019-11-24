@@ -4,7 +4,7 @@ print_usage() {
     echo "${1} <plugin> <action>"
     echo
     echo "plugin: all server front"
-    echo "action: up down status"
+    echo "action: up down status install (only for front)"
     echo
 }
 
@@ -82,6 +82,12 @@ run() {
 		    ;;
 		"down")
 		    if ! front_getDown
+			then
+			return 1
+		    fi
+		    ;;
+		"install")
+		    if ! front_getInstall
 			then
 			return 1
 		    fi
@@ -204,7 +210,7 @@ all_getStatus() {
 server_getUp() {
     print_status_begin "Starting the server"
 
-    if !server_getStatus
+    if ! server_getStatus
     then
 	logging "server already started"
 	print_status_end_OK
@@ -224,7 +230,7 @@ server_getUp() {
 front_getUp() {
     print_status_begin "Starting the front"
 
-    if !front_getStatus
+    if ! front_getStatus
     then
 	logging "front already started"
 	print_status_end_OK
@@ -241,9 +247,35 @@ front_getUp() {
     return 0
 }
 
+front_getInstall() {
+    print_status_begin "Installing front components"
+
+    if ! (cd "frontend" && npm install)
+	then
+	print_status_end_ERROR
+	return 1
+    fi
+
+    print_status_end_DONE
+    return 0
+}
+
 all_getUp() {
     server_getUp || return 1
 	front_getUp  || return 1
+}
+
+server_getDown() {
+    logging "Not implemented yet"
+}
+
+front_getDown() {
+    logging "Not implemented yet"
+}
+
+all_getDown() {
+    server_getDown
+	front_getDown
 }
 
 ARG_PLUGIN=${1}
@@ -257,9 +289,7 @@ ARG_ACTION=${2}
     then
 		echo "${tput_green}The program ended successfully.${tput_reset}"
     else
-		echo "The program ended with errors."
-		print_status_begin "${tput_red}The program ended with errors.${tput_reset}"
-		print_status_end_ERROR
+		echo "${tput_red}The program ended with errors.${tput_reset}"
     fi
     exit "${RES}"
 )
