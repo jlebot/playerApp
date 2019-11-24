@@ -151,25 +151,22 @@ print_status_begin() {
 print_status_end_ON() {
     G_STATUS_END_TIME=$(date +%s)
     print_status_compute_time
-    printf "[  ${tput_green}ON${tput_reset}  ]\n"
+    printf "[${tput_green}ON${tput_reset}]\n"
     logging "Step is ON"
-    logging "---"
 }
 
 print_status_end_OFF() {
     G_STATUS_END_TIME=$(date +%s)
     print_status_compute_time
-    printf "[  ${tput_red}OFF${tput_reset} ]\n"
+    printf "[${tput_red}OFF${tput_reset}]\n"
     logging "Step is OFF"
-    logging "---"
 }
 
 print_status_end_OK() {
     G_STATUS_END_TIME=$(date +%s)
     print_status_compute_time
-    printf "[  ${tput_green}OK${tput_reset}  ]\n"
+    printf "[${tput_green}OK${tput_reset}]\n"
     logging "Step is OK"
-    logging "---"
 }
 
 print_status_end_ERROR() {
@@ -177,7 +174,6 @@ print_status_end_ERROR() {
     print_status_compute_time
     printf "[${tput_red}ERROR!${tput_reset}]\n"
     logging "Step is ERROR"
-    logging "---"
 }
 
 server_getStatus() {
@@ -208,7 +204,7 @@ all_getStatus() {
 server_getUp() {
     print_status_begin "Starting the server"
 
-    if server_getStatus
+    if !server_getStatus
     then
 	logging "server already started"
 	print_status_end_OK
@@ -228,7 +224,7 @@ server_getUp() {
 front_getUp() {
     print_status_begin "Starting the front"
 
-    if front_getStatus
+    if !front_getStatus
     then
 	logging "front already started"
 	print_status_end_OK
@@ -243,6 +239,11 @@ front_getUp() {
 
     print_status_end_DONE
     return 0
+}
+
+all_getUp() {
+    server_getUp || return 1
+	front_getUp  || return 1
 }
 
 ARG_PLUGIN=${1}
