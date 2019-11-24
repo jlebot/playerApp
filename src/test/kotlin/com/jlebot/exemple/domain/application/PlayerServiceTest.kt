@@ -2,10 +2,10 @@ package com.jlebot.exemple.domain.application
 
 import com.jlebot.exemple.domain.api.IPlayerApi
 import com.jlebot.exemple.domain.api.Player
+import com.jlebot.exemple.exception.PlayerAlreadyExistException
 import com.jlebot.exemple.exception.PlayerNotFoundException
 import com.jlebot.exemple.exception.PlayerValidationException
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
 import org.mockito.Mockito
@@ -31,9 +31,36 @@ class PlayerServiceTest() {
     }
 
     @Test
+    fun testCreateWithoutError() {
+        // ARRANGE
+        val player = "NewPlayer"
+
+        // ACT
+        val result = playerApi.create(player)
+
+        // ASSERT
+        assertNotNull(result)
+        assertEquals(player, result.pseudo)
+        assertEquals(0, result.points)
+    }
+
+    @Test
+    @Throws(PlayerAlreadyExistException::class)
+    fun testCreatePlayerThrowExceptionWhenPlayerAlreadyExist() {
+        // ARRANGE
+        val existingPlayer = "M3rzhin"
+        Mockito.`when`(playerRepository.find(existingPlayer)).thenReturn(Player(existingPlayer, 0))
+
+        // ACT and ASSERT
+        assertThrows(PlayerAlreadyExistException::class.java) {
+            playerApi.create(existingPlayer)
+        }
+    }
+
+    @Test
     fun testSaveWithoutError() {
         // ARRANGE
-        val player = Player("M3rzhin", 0)
+        val player = Player("M3rzhin", 666)
 
         // ACT
         val result = playerApi.save(player)

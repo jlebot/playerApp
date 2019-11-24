@@ -1,7 +1,7 @@
 package com.jlebot.exemple.resource
 
 import com.jlebot.exemple.domain.api.IPlayerApi
-import com.jlebot.exemple.domain.api.Player
+import com.jlebot.exemple.exception.PlayerAlreadyExistException
 import com.jlebot.exemple.exception.PlayerNotFoundException
 import com.jlebot.exemple.exception.PlayerValidationException
 import com.jlebot.exemple.pagination.Page
@@ -67,9 +67,12 @@ class PlayerResource(val playerApi: IPlayerApi) {
     fun create(@Valid pseudo: String): Response {
         LOGGER.info("Handling request to create player {}", pseudo)
         return try {
-            val player = mapper.toRepresentation(playerApi.save(Player(pseudo,0)))
+            val player = mapper.toRepresentation(playerApi.create(pseudo))
             Response.ok(player).build()
         } catch (e: PlayerValidationException) {
+            LOGGER.error("Error while creating player {}", pseudo)
+            Response.status(Response.Status.FORBIDDEN).build()
+        }  catch (e: PlayerAlreadyExistException) {
             LOGGER.error("Error while creating player {}", pseudo)
             Response.status(Response.Status.FORBIDDEN).build()
         }
