@@ -175,6 +175,13 @@ print_status_end_OK() {
     logging "Step is OK"
 }
 
+print_status_end_DONE() {
+    G_STATUS_END_TIME=$(date +%s)
+    print_status_compute_time
+    printf "[${tput_green}DONE${tput_reset}]\n"
+    logging "Step is DONE"
+}
+
 print_status_end_ERROR() {
     G_STATUS_END_TIME=$(date +%s)
     print_status_compute_time
