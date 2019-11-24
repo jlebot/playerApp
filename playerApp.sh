@@ -123,10 +123,15 @@ logging() {
 ### DISPLAY FUNCTIONS ###
 #########################
 
+print_status_compute_time() {
+    DELTA_TIME=$(expr ${G_STATUS_END_TIME} - ${G_STATUS_BEGIN_TIME})
+    DELTA_TIME_STR=$(secToStr "${DELTA_TIME}")
+    printf "%-100s %s\n" "${G_STATUS_BEGIN_STEP}" "${DELTA_TIME_STR}"
+}
+
 print_status_begin() {
     G_STATUS_BEGIN_TIME=$(date +%s)
     G_STATUS_BEGIN_STEP="${1}"
-    printf "%-100s" "${1}"
     logging "Step ${1}"
 }
 
@@ -143,6 +148,14 @@ print_status_end_OFF() {
     print_status_compute_time
     printf "[  ${tput_red}OFF${tput_reset} ]\n"
     logging "Step is OFF"
+    logging "---"
+}
+
+print_status_end_OK() {
+    G_STATUS_END_TIME=$(date +%s)
+    print_status_compute_time
+    printf "[  ${tput_green}OK${tput_reset}  ]\n"
+    logging "Step is OK"
     logging "---"
 }
 
