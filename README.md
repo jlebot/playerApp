@@ -12,7 +12,7 @@ The app can be launch by a script  `playerApp.sh` at the root of the project.
 
 ## Database configuration
 
-The app have been tested using PostgreSql database but any relational database should work.
+The app have been tested using PostgreSql database but any relational database should work whith the proper configuration and driver dependancy.
 
 The database config file should be edited in 'src/main/resources/config/local.yaml'
 
@@ -21,9 +21,11 @@ The database init script can be found at in 'bdd/init_base.sql'
 ## Build
 
 Run `./playerApp.sh server install` to build server application.
+
 Run `./playerApp.sh front install` to install front dependancies.
 
 ## Run
 
 Run `./playerApp.sh server up` to lauch server service.
+
 Run `./playerApp.sh front up` to lauch the front app.
