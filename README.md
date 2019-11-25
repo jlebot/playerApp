@@ -6,7 +6,7 @@ Once launch, the api can be access at `http://localhost:8080/` and UI interface 
 
 ## Server configuration
 
-Java need to be install on the server and Node also.
+Java, Node and Angular-CLI need to be install on the server.
 
 The app can be launch by a script  `playerApp.sh` at the root of the project.
 
@@ -20,8 +20,10 @@ The database init script can be found at in 'bdd/init_base.sql'
 
 ## Build
 
-Run `playerApp.sh front install` to install front dependancies.
+Run `./playerApp.sh server install` to build server application.
+Run `./playerApp.sh front install` to install front dependancies.
 
 ## Run
 
-Run `playerApp.sh all up` to lauch server service and the front app.
+Run `./playerApp.sh server up` to lauch server service.
+Run `./playerApp.sh front up` to lauch the front app.

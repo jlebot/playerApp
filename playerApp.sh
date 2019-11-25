@@ -3,8 +3,8 @@
 print_usage() {
     echo "${1} <plugin> <action>"
     echo
-    echo "plugin: all server front"
-    echo "action: up down status install (only for front)"
+    echo "plugin: server front all"
+    echo "action: install up down status"
     echo
 }
 
@@ -22,33 +22,14 @@ run() {
 	shift
 
     case "${ARG_PLUGIN}" in
-	all)
-	    case "${ARG_ACTION}" in
-		"up")
-		    if ! all_getUp
-			then
-			return 1
-		    fi
-		    ;;
-		"down")
-		    if ! all_getDown
-			then
-			return 1
-		    fi
-		    ;;
-		"status")
-		    if ! all_getStatus
-		    then
-			return 1
-		    fi
-		    ;;
-		*)
-		    print_usage "${PRG}"
-		    return 1
-	    esac
-	    ;;
 	server)
 	    case "${ARG_ACTION}" in
+		"install")
+		    if ! server_getInstall
+			then
+			return 1
+		    fi
+		    ;;
 		"up")
 		    if ! server_getUp
 			then
@@ -74,6 +55,12 @@ run() {
 	    ;;
 	front)
 	    case "${ARG_ACTION}" in
+		"install")
+		    if ! front_getInstall
+			then
+			return 1
+		    fi
+		    ;;
 		"up")
 		    if ! front_getUp
 			then
@@ -86,14 +73,39 @@ run() {
 			return 1
 		    fi
 		    ;;
+		"status")
+		    if ! front_getStatus
+		    then
+			return 1
+		    fi
+		    ;;
+		*)
+		    print_usage "${PRG}"
+		    return 1
+	    esac
+	    ;;
+	all)
+	    case "${ARG_ACTION}" in
 		"install")
-		    if ! front_getInstall
+		    if ! all_getInstall
+			then
+			return 1
+		    fi
+		    ;;
+		"up")
+		    if ! all_getUp
+			then
+			return 1
+		    fi
+		    ;;
+		"down")
+		    if ! all_getDown
 			then
 			return 1
 		    fi
 		    ;;
 		"status")
-		    if ! front_getStatus
+		    if ! all_getStatus
 		    then
 			return 1
 		    fi
@@ -199,19 +211,17 @@ server_getStatus() {
     return 0
 }
 
-front_getStatus() {
-    if lsof -Pi :4200 -sTCP:LISTEN -t >/dev/null;
-    then
-	logging "front is up"
+server_getInstall() {
+    print_status_begin "Building app server"
+
+    if ! ./gradlew build
+	then
+	print_status_end_ERROR
 	return 1
     fi
-    logging "front is down"
-    return 0
-}
 
-all_getStatus() {
-    server_getStatus
-	front_getStatus
+    print_status_end_DONE
+    return 0
 }
 
 server_getUp() {
@@ -225,6 +235,33 @@ server_getUp() {
     fi
 
     if ! ./gradlew run
+	then
+	print_status_end_ERROR
+	return 1
+    fi
+
+    print_status_end_DONE
+    return 0
+}
+
+server_getDown() {
+    logging "Not implemented yet"
+}
+
+front_getStatus() {
+    if lsof -Pi :4200 -sTCP:LISTEN -t >/dev/null;
+    then
+	logging "front is up"
+	return 1
+    fi
+    logging "front is down"
+    return 0
+}
+
+front_getInstall() {
+    print_status_begin "Installing front components"
+
+    if ! (cd "frontend/betclic-app" && npm install)
 	then
 	print_status_end_ERROR
 	return 1
@@ -254,35 +291,32 @@ front_getUp() {
     return 0
 }
 
-front_getInstall() {
-    print_status_begin "Installing front components"
-
-    if ! (cd "frontend/betclic-app" && npm install)
-	then
-	print_status_end_ERROR
-	return 1
-    fi
-
-    print_status_end_DONE
-    return 0
-}
-
-all_getUp() {
-    server_getUp || return 1
-	front_getUp  || return 1
-}
-
-server_getDown() {
-    logging "Not implemented yet"
-}
-
 front_getDown() {
     logging "Not implemented yet"
 }
 
+all_getStatus() {
+    server_getStatus
+	front_getStatus
+	return 0
+}
+
+all_getInstall() {
+    #server_getInstall || return 1
+	#front_getInstall  || return 1
+	logging "Not implemented yet"
+}
+
+all_getUp() {
+    #server_getUp || return 1
+	#front_getUp  || return 1
+	logging "Not implemented yet"
+}
+
 all_getDown() {
-    server_getDown
-	front_getDown
+    #server_getDown || return 1
+	#front_getDown  || return 1
+	logging "Not implemented yet"
 }
 
 ARG_PLUGIN=${1}
